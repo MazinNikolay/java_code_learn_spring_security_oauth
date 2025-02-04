@@ -1,4 +1,4 @@
-package com.javacode.learn.configuration;
+package com.javacode.learn.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

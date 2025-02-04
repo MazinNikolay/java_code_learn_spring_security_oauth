@@ -1,6 +1,7 @@
 package com.javacode.learn.configuration;
 
 import com.javacode.learn.service.SocialAppService;
+import com.javacode.learn.utils.OidcLogoutSuccessHandler;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
