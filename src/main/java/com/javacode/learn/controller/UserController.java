@@ -7,13 +7,25 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/app")
 public class UserController {
     @GetMapping("/user")
     public String user(@AuthenticationPrincipal OAuth2User principal, Model model) {
         model.addAttribute("name", principal.getAttribute("name"));
-        model.addAttribute("email", principal.getAttribute("email"));
+        model.addAttribute("login", principal.getAttribute("login"));
+        model.addAttribute("email", getEmailFromGitHub(principal));
         return "user";
+    }
+
+    private String getEmailFromGitHub(OAuth2User principal) {
+        List<Map<String, Object>> emails = principal.getAttribute("emails");
+        if (emails != null && !emails.isEmpty()) {
+            return (String) emails.get(0).get("email");
+        }
+        return null;
     }
 }

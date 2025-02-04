@@ -12,8 +12,8 @@ spring:
     oauth2:
       client:
         registration:
-          google:
-            client-id: 
-            client-secret: 
+          github:
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
             scope: profile, email
             redirect-uri: "{baseUrl}/app/login/oauth2/code/{registrationId}"

@@ -8,12 +8,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 @Configuration
 @AllArgsConstructor
-@EnableWebSecurity
 public class SecurityConfig {
     private final SocialAppService socialAppService;
 
@@ -27,6 +28,9 @@ public class SecurityConfig {
                         .requestMatchers("/app/admin/**").hasRole("ADMIN") // Только для администраторов
                         .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
                 )
+                .sessionManagement(configurer -> configurer
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                //.csrf(CsrfConfigurer::disable)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(new HttpStatusEntryPoint(
                                 HttpStatus.UNAUTHORIZED))
