@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CustomErrorController implements ErrorController {
     private static final Logger logger = LoggerFactory.getLogger(CustomErrorController.class);
 
-    @RequestMapping("/error")
+    @RequestMapping("/app/error")
     public String handleError(HttpServletRequest request) {
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
         if (statusCode != null) {

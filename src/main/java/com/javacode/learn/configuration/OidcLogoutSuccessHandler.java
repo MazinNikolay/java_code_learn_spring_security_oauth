@@ -21,6 +21,6 @@ public class OidcLogoutSuccessHandler implements LogoutSuccessHandler {
             String email = user.getAttribute("email");
             logger.info("User logged out: {}", email);
         }
-        response.sendRedirect("/");
+        response.sendRedirect("/app/");
     }
 }

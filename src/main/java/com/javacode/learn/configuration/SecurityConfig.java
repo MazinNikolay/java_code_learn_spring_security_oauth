@@ -7,9 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
@@ -32,11 +29,6 @@ public class SecurityConfig {
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(new HttpStatusEntryPoint(
                                 HttpStatus.UNAUTHORIZED))
-                        .accessDeniedHandler((request, response,
-                                              accessDeniedException) -> {
-                            response.setStatus(HttpStatus.FORBIDDEN.value()); // Обработка 403
-                            response.getWriter().write("Access Denied: You don't have permission to access this resource.");// Обработка ошибок аутентификации
-                        })
                 )
                 .oauth2Login(oauth2Login -> oauth2Login
                         .loginPage("/app/") // Указываем страницу для входа
@@ -45,7 +37,7 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/app/user")
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout") // URL для выхода
+                        .logoutUrl("/app/logout") // URL для выхода
                         .logoutSuccessHandler(oidcLogoutSuccessHandler()) // Обработчик для логаута
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
