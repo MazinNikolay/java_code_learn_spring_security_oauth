@@ -13,7 +13,7 @@ spring:
       client:
         registration:
           google:
-            client-id: Ov23liC4puVCR0zaG5MF
-            client-secret: 045d56e5acb7f802652fc91d7c321784d296fb82
+            client-id: 
+            client-secret: 
             scope: profile, email
             redirect-uri: "{baseUrl}/app/login/oauth2/code/{registrationId}"
