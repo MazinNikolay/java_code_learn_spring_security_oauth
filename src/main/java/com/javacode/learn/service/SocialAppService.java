@@ -2,6 +2,7 @@ package com.javacode.learn.service;
 
 import com.javacode.learn.entity.User;
 import com.javacode.learn.repository.UserRepository;
+import com.javacode.learn.security.Role;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,19 +33,19 @@ public class SocialAppService implements OAuth2UserService<OAuth2UserRequest, OA
         String email = oAuth2User.getAttribute("email");
         User user = userRepository.findByEmail(email).orElseGet(() -> {
                     User newUser = User.builder()
-                            .name(oAuth2User.getAttribute("name"))
+                            .username(oAuth2User.getAttribute("name"))
                             .email(email)
-                            .role("USER")
+                            .role(Role.USER)
                             .build();
-                    logger.info("New user registered: {}", email);
+                    logger.info("New user registered: {}", newUser.getUsername());
                     return userRepository.save(newUser);
                 }
         );
-        logger.info("User logged in: {}", email);
+        logger.info("User logged in: {}", user.getUsername());
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_" + user.getRole())),
                 oAuth2User.getAttributes(),
-                "sub"
+                "id"
         );
     }
 }

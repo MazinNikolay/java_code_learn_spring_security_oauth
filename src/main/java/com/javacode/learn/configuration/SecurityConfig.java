@@ -7,9 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
@@ -17,41 +14,37 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 @AllArgsConstructor
 public class SecurityConfig {
     private final SocialAppService socialAppService;
+    private final OidcLogoutSuccessHandler oidcLogoutSuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/app/", "/app/login", "/app/error", "/app/webjars/**")
+                        .requestMatchers("/", "/login", "/logout", "/error", "/webjars/**",
+                                "/oauth2/authorization/**")
                         .permitAll() // Разрешаем доступ к этим маршрутам всем
-                        .requestMatchers("/app/h2-console/*").permitAll()
-                        .requestMatchers("/app/admin/**").hasRole("ADMIN") // Только для администраторов
+                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // Только для администраторов
                         .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
                 )
-                .sessionManagement(configurer -> configurer
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                //.csrf(CsrfConfigurer::disable)
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(new HttpStatusEntryPoint(
                                 HttpStatus.UNAUTHORIZED))
                 )
                 .oauth2Login(oauth2Login -> oauth2Login
-                        .loginPage("/app/") // Указываем страницу для входа
+                        .loginPage("/login") // Указываем страницу для входа
                         .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
                                 .userService(socialAppService))
-                        .defaultSuccessUrl("/app/user")
+                        .defaultSuccessUrl("/user")
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/app/logout") // URL для выхода
-                        .logoutSuccessHandler(oidcLogoutSuccessHandler()) // Обработчик для логаута
+                        .logoutUrl("/logout") // URL для выхода
+                        .logoutSuccessHandler(oidcLogoutSuccessHandler) // Обработчик для логаута
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
+                        .clearAuthentication(true) // Очистка контекста безопасности
+                        .permitAll()
                 );
         return http.build();
-    }
-
-    @Bean
-    public OidcLogoutSuccessHandler oidcLogoutSuccessHandler() {
-        return new OidcLogoutSuccessHandler();
     }
 }

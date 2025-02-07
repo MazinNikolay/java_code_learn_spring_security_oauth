@@ -1,5 +1,6 @@
 package com.javacode.learn.entity;
 
+import com.javacode.learn.security.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,13 +11,14 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Table(name = "\"user\"")
-public class User {
+public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String username;
     private String email;
-    private String role;
+    private Role role;
+    private String password;
 }
 

@@ -5,13 +5,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
-import java.util.Map;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
-@RequestMapping("/app")
 public class UserController {
     @GetMapping("/user")
     public String user(@AuthenticationPrincipal OAuth2User principal, Model model) {
@@ -21,11 +17,17 @@ public class UserController {
         return "user";
     }
 
+    @GetMapping("/login")
+    public String login() {
+        return "login"; // Возвращает имя Thymeleaf-шаблона (login.html)
+    }
+
+    /*@PostMapping("/logout")
+    public String logout() {
+        return "logout"; // Возвращает имя Thymeleaf-шаблона (login.html)
+    }*/
+
     private String getEmailFromGitHub(OAuth2User principal) {
-        List<Map<String, Object>> emails = principal.getAttribute("emails");
-        if (emails != null && !emails.isEmpty()) {
-            return (String) emails.get(0).get("email");
-        }
-        return null;
+        return (String) principal.getAttribute("email");
     }
 }
