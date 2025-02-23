@@ -20,10 +20,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/", "/login", "/logout", "/error", "/webjars/**",
-                                "/oauth2/authorization/**")
+                        .requestMatchers("/home", "/login", "/error", "/webjars/**",
+                                "/oauth2/authorization/**", "/h2-console/**")
                         .permitAll() // Разрешаем доступ к этим маршрутам всем
-                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN") // Только для администраторов
                         .anyRequest().authenticated() // Все остальные запросы требуют аутентификации
                 )
@@ -39,11 +38,14 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout") // URL для выхода
-                        .logoutSuccessHandler(oidcLogoutSuccessHandler) // Обработчик для логаута
+                        .logoutSuccessHandler(oidcLogoutSuccessHandler)
+                        .logoutSuccessUrl("/home")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
-                        .clearAuthentication(true) // Очистка контекста безопасности
                         .permitAll()
+                )
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2-console/**") // Отключаем CSRF
                 );
         return http.build();
     }
